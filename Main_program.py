@@ -3,18 +3,26 @@ import numpy as np
 from matplotlib.animation import FuncAnimation
 
 fig, ax = plt.subplots()
-ax.axis([0,10,0,10])
+ax.axis([0, 10, 0, 10])
 
-castice = np.array([[1], [1]])  # x, y coordinates, x, y velocities
+# Initial position and velocities
+x, y = 1, 1
+vx, vy = 200, 170
 
-point = ax.plot(castice[0], castice[1], marker="o") # Access the first element of the list
+point, = ax.plot(x, y, marker="o")  # Note the comma after "point" to unpack the tuple
 
 def update(i):
-    castice[0] = castice[0] + (0.1) * castice[2]
-    castice[1] = castice[1] + (0.1) * castice[3]
-    point.set_data([castice[0][0]], [castice[1][0]])  # Update the data of the line
+    global x, y, vx, vy # To access and modify the variables outside the function scope
+    x += 0.001 * vx
+    if 0 > x or 10 < x:
+            vx = -vx
+    y += 0.001 * vy
+    if 0 > y or 10 < y:
+            vy = -vy
+
+    point.set_data(x, y)  # Set data for the point
     return point,
 
-ani = FuncAnimation(fig, update, frames=range(100), interval=20)
+ani = FuncAnimation(fig, update, interval=1)
 
 plt.show()
