@@ -2,27 +2,40 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
 
+class Particle:
+       def __init__(self, x, y, vx, vy, r):
+             self.pos_x = x 
+             self.pos_y = y
+             self.vel_x = vx
+             self.vel_y = vy
+             self.radius = r
+             
 fig, ax = plt.subplots()
 ax.axis([0, 10, 0, 10])
 
+
 # Initial position and velocities
-x, y = 1, 1
-vx, vy = 200, 170
+p1 = Particle(1,2,3,7,30)
+point, = ax.plot(int(p1.pos_x), int(p1.pos_y), "o", mfc = "none", markersize = p1.radius)
 
-point, = ax.plot(x, y, marker="o")  # Note the comma after "point" to unpack the tuple
+prev_frame_time = 0
 
-def update(i):
-    global x, y, vx, vy # To access and modify the variables outside the function scope
-    x += 0.001 * vx
-    if 0 > x or 10 < x:
-            vx = -vx
-    y += 0.001 * vy
-    if 0 > y or 10 < y:
-            vy = -vy
+def update(frame):
+    global p1, prev_frame_time
+    current_time = frame * 0.001 
+    dt = current_time - prev_frame_time
+    prev_frame_time = current_time
 
-    point.set_data(x, y)  # Set data for the point
+    p1.pos_x += dt * p1.vel_x
+    if 0 > p1.pos_x or 10 < p1.pos_x:
+            p1.vel_x = -p1.vel_x
+    p1.pos_y += dt * p1.vel_y
+    if 0 > p1.pos_y or 10 < p1.pos_y:
+            p1.vel_y = -p1.vel_y
+    x = p1.pos_x
+    y = p1.pos_y
+    point.set_data(x, y)
     return point,
 
-ani = FuncAnimation(fig, update, interval=1)
-
+ani = FuncAnimation(fig, update, interval=100, frames=np.arange(0, 1000))
 plt.show()
