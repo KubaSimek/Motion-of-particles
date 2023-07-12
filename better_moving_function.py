@@ -1,16 +1,20 @@
-import Main_program as mp
-import easing as ea
+import numpy as np
+from easing import easing
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from itertools import count
 
+index = count()
 
-tan = (mp.p1.vel_y)/(mp.p1.vel_x)
+def animate(i):
+   var = next(index)
+   v = var*0.05 % 10
+   plt.cla()
+   plt.xlim(0,10)
+   plt.ylim(0,10)
+   plt.scatter(v,v)
 
-def line(t):
-    return mp.np.array([mp.p1.pos_x + t * mp.p1.vel_x], [mp.p1.pos_y + t * mp.p1.vel_y])
-
-def update2(t):
-    x,y = line(t)
-    mp.point.set_data([x], [y])
-    return mp.point,
-
-ani2 = mp.FuncAnimation(mp.fig, update2, interval = 1)
+ani = FuncAnimation(plt.gcf(), animate, frames = index, interval = 1)
+plt.tight_layout()
+plt.show()
 
