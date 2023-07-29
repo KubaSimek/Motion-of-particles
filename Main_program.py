@@ -30,6 +30,9 @@ class Particles:
         
        def add_par(self,par):
              self.par.append(par)
+      
+       def destoy_particles(self):
+             self.par = []
        
        def print_par(self):
              return(print(self.par))
@@ -80,7 +83,6 @@ def update(frame):
             p.pos_x += dt * p.vel_x
             p.pos_y += dt * p.vel_y 
             p.plt_par(ax)
-    
     return 
 
 ani = FuncAnimation(fig, update, interval=1)
