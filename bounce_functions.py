@@ -3,17 +3,17 @@ import numpy as np
 
 def wall_bounce(particles):
         for p in particles.par:
-            if (0 + p.radius/50) > p.pos_x:
-                    p.pos_x = p.radius/50
+            if (0 + p.radius) > p.pos_x:
+                    p.pos_x = p.radius
                     p.vel_x = -p.vel_x
-            if (10 - p.radius/50) < p.pos_x:
-                    p.pos_x = 10 - p.radius/50
+            if (10 - p.radius) < p.pos_x:
+                    p.pos_x = 10 - p.radius
                     p.vel_x = -p.vel_x
-            if (0 + p.radius/50) > p.pos_y:
+            if (0 + p.radius) > p.pos_y:
                     p.vel_y = -p.vel_y
-                    p.pos_y = p.radius/50
-            if (10 - p.radius/50) < p.pos_y:
-                    p.pos_y = 10 - p.radius/50
+                    p.pos_y = p.radius
+            if (10 - p.radius) < p.pos_y:
+                    p.pos_y = 10 - p.radius
                     p.vel_y = -p.vel_y
         return
 

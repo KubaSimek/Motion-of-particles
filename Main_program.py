@@ -1,90 +1,84 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import bounce_functions as bf
-from matplotlib.patches import Circle
 from matplotlib.animation import FuncAnimation
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class Particle:
-       def __init__(self, x, y, vx, vy, r, d = 1, m = None):
-             self.name = self
-             self.pos_x = x 
-             self.pos_y = y
-             self.vel_x = vx
-             self.vel_y = vy
-             self.radius = r
-             self.pos_coord = np.array((x,y))
-             self.vel_coord = np.array((vx,vy))
-             self.density = d
-             if m == None:
-                   self.mass = d * (np.pi * r**2)
-             else:
-                   self.mass = m
-       
-       def plt_par(self,ax):
-             point = ax.plot(self.pos_x, self.pos_y, "o", mfc = "none", markersize = self.radius)
-             return point
+    def __init__(self, x, y, vx, vy, r, m):
+        self.name = self
+        self.pos_x = x 
+        self.pos_y = y
+        self.vel_x = vx
+        self.vel_y = vy
+        self.radius = r
+        self.pos_coord = np.array((x,y))
+        self.vel_coord = np.array((vx,vy))
+        self.point = None
 
+    def plt_par(self,ax):
+        self.point, = ax.plot(self.pos_x, self.pos_y, "o", mfc = "none", markersize = self.radius*60)
+
+fig, ax= plt.subplots()
+prev_frame_time = 0
 class Particles:
-       def __init__(self):
-             self.par = []
+    
+    def __init__(self):
+        self.par = []
         
-       def add_par(self,par):
-             self.par.append(par)
+    def add_par(self,par):
+        self.par.append(par)
       
-       def destoy_particles(self):
-             self.par = []
-       
-       def print_par(self):
-             return(print(self.par))
+    def destoy_particles(self):
+        self.par = []
 
-
-particles = Particles()
-p1 = Particle(1,2,100,90,10)
-p2 = Particle(7,8,-80,-110,15)
-p3 = Particle(8,6,30,99,50)
-
-particles.add_par(p1)
-particles.add_par(p2)
-particles.add_par(p3)
-             
-fig, ax = plt.subplots()
-for s in ['top','bottom','left','right']:
-        ax.spines[s].set_linewidth(2)
+    def print_par(self):
+        return(print(self.par))
+    
+    def innit_anim_on_canvas(self,x):
+        global fig
+        animation_canvas = FigureCanvasTkAgg(figure = fig, master= x)
+        animation_canvas.get_tk_widget().place(x = 500, y = 62, anchor="nw", height = 440, width = 440)
+    
+    def animation(self):
+        global fig, ax
+        for s in ['top','bottom','left','right']:
+            ax.spines[s].set_linewidth(2)
         ax.set_aspect('equal', 'box')
         ax.set_xlim(0, 10)
         ax.set_ylim(0, 10)
         ax.xaxis.set_ticks([])
         ax.yaxis.set_ticks([])
-particles_plots = []
+        fig.tight_layout(pad=0)
+        fig.subplots_adjust(top=1, left=-0.3147, right=1, bottom=0.085)
+        
+        bf.pairs_of_particles(self.par)
 
-
-prev_frame_time = 0
-
-bf.pairs_of_particles(particles.par)
-
-
-
-def position_update(dt):
-      for p in particles.par():
-            p.pos_x += dt * p.vel_x
-            p.pos_y += dt * p.vel_y 
+        for p in self.par:
             p.plt_par(ax)
+        
+        def position_update(dt):
+            for p in self.par:
+                p.pos_x += dt * p.vel_x
+                p.pos_y += dt * p.vel_y 
 
-def update(frame):
-    global p1, p2, prev_frame_time
-    current_time = frame * 0.001 
-    dt = current_time - prev_frame_time
-    prev_frame_time = current_time
+        def update(frame):
+            global prev_frame_time
+            current_time = frame * 0.001 
+            dt = current_time - prev_frame_time
+            prev_frame_time = current_time
 
-    bf.wall_bounce(particles)
-    bf.particles_bounce()
+            bf.wall_bounce(self)
+            #bf.particles_bounce()
+            
+            position_update(dt)
+            
+            for p in self.par:
+                p.point.set_data([p.pos_x],[p.pos_y])
+            
+            return
+            
+        ani = FuncAnimation(fig, update, interval=1, cache_frame_data=False)
+        plt.show()
 
-    for p in particles.par():
-            p.pos_x += dt * p.vel_x
-            p.pos_y += dt * p.vel_y 
-            p.plt_par(ax)
-    return 
-
-ani = FuncAnimation(fig, update, interval=1)
-plt.show()
-
+particles = Particles()
