@@ -5,7 +5,7 @@ To divide the code for different sections I use //TITLE and /Subtitle
 """
 
 import matplotlib
-matplotlib.use("TkAgg")  # NOTE: import order matters
+matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
 
 import tkinter as tk
@@ -72,7 +72,8 @@ frame1_2 = ImageTk.PhotoImage(Image.open("images/frames_others/frame1_2.png"))
 
 frame2_1 = ImageTk.PhotoImage((Image.open("images/frames_others/frame1_1.png")).resize((438,312)))
 frame2_2 = ImageTk.PhotoImage((Image.open("images/frames_others/frame1_1.png")).resize((438,150)))
-frame2_3 = ImageTk.PhotoImage((Image.open("images/frames_others/frame1_1.png")).resize((222,1)))
+
+frame3_1 = ImageTk.PhotoImage((Image.open("images/frames_others/frame1_1.png")).resize((438,700)))
 
 info_bg = ImageTk.PhotoImage(Image.open("images/background/info_bg.png"))
 
@@ -82,6 +83,7 @@ info_bg = ImageTk.PhotoImage(Image.open("images/background/info_bg.png"))
 # Storage for all widgets on the canvas. When moving on the next page, all widgets make hidden and just some make visible 
 all_widgets_on_canvas = [] 
 
+circles = []
 
 # If we choosing radius of the particle or not
 still_radius = False
@@ -98,12 +100,14 @@ circle = False
 # //PARTICLES
 """Through the process of adding the particle we will change these variables and after selecting last variable (mass) 
 it will add the particle with its properties to the set of all particles"""
+#particles = mp.Particles()
 var_x = 0
 var_y = 0
 var_vx = 0
 var_vy = 0
 var_r = 0
 var_m = 0
+num = 0
 
 
 # /Input fileds
@@ -162,7 +166,7 @@ canvas1.bind('<Motion>', motion_radius)
 
 input_x_coord = tk.Entry(window1, font = ("Avenir", 35, "bold"), textvariable = entry_x, width = 5, borderwidth=0, highlightbackground = colour_blue, bg = colour_lightblue, fg = colour_darkblue)
 input_y_coord = tk.Entry(window1, font = ("Avenir", 35, "bold"), textvariable = entry_y, width = 5, borderwidth=0, highlightbackground = colour_blue, bg = colour_lightblue, fg = colour_darkblue)
-input_radius = tk.Entry(window1, font = ("Avenir", 35, "bold"), width = 5, borderwidth=0, highlightbackground = colour_blue, bg = colour_lightblue, fg = colour_darkblue)
+input_radius = tk.Entry(window1, font = ("Avenir", 35, "bold"), textvariable = str(1), width = 5, borderwidth=0, highlightbackground = colour_blue, bg = colour_lightblue, fg = colour_darkblue)
 input_x_vel = tk.Entry(window1, font = ("Avenir", 35, "bold"), width = 5, borderwidth=0, highlightbackground = colour_blue, bg = colour_lightblue, fg = colour_darkblue)
 input_y_vel = tk.Entry(window1, font = ("Avenir", 35, "bold"), width = 5, borderwidth=0, highlightbackground = colour_blue, bg = colour_lightblue, fg = colour_darkblue)
 input_mass = tk.Entry(window1, font = ("Avenir", 35, "bold"), width = 5, borderwidth=0, highlightbackground = colour_blue, bg = colour_lightblue, fg = colour_darkblue)
@@ -180,28 +184,33 @@ text_start2 = canvas1.create_text(20,130, anchor = "nw", text = "Add particle to
 all_widgets_on_canvas += [text_start1, text_start2]
 
 text_addparticle1 = canvas1.create_text(20,10, anchor = "nw", text = "Select the position\nof the particle", font = ("Avenir", 40, "bold"), fill = colour_darkblue)
-text_addparticle2 = canvas1.create_text(20,120, anchor = "nw", text = "Click in the white box\nto select the position", font = ("Avenir", 25, "bold"), fill = colour_grayblue)
+text_addparticle2 = canvas1.create_text(20,130, anchor = "nw", text = "Click in the white box\nto select the position", font = ("Avenir", 25, "bold"), fill = colour_grayblue)
 text_addparticle6 = canvas1.create_text(20,190, anchor = "nw", text = "Click one more time to reselect", font = ("Avenir", 20), fill = colour_grayblue)
 text_addparticle3 = canvas1.create_text(28,227, anchor = "nw", text = "X = ", font = ("Avenir", 35, "bold"), fill = colour_darkblue)
 text_addparticle4 = canvas1.create_text(230,227, anchor = "nw", text = "Y = ", font = ("Avenir", 35, "bold"), fill = colour_darkblue)
 text_addparticle5 = canvas1.create_text(57,277, anchor = "nw", text = "(Insert numbers between 0 and 10)", font = ("Avenir", 20), fill = colour_grayblue)
-all_widgets_on_canvas += [text_addparticle1, text_addparticle2, text_addparticle3, text_addparticle4, text_addparticle5, text_addparticle6]
+all_widgets_on_canvas += [text_addparticle1, text_addparticle2, text_addparticle3, text_addparticle4, text_addparticle5]
 
 text_radius1 = canvas1.create_text(20,10, anchor = "nw", text = "Select the radius\nof the particle", font = ("Avenir", 40, "bold"), fill = colour_darkblue)
-text_radius2 = canvas1.create_text(20,120, anchor = "nw", text = "Click in the white box\nor fill in the radius", font = ("Avenir", 25, "bold"), fill = colour_grayblue)
+text_radius2 = canvas1.create_text(20,130, anchor = "nw", text = "Click in the white box\nor fill in the radius", font = ("Avenir", 25, "bold"), fill = colour_grayblue)
 text_radius3 = canvas1.create_text(28,227, anchor = "nw", text = "Radius = ", font = ("Avenir", 35, "bold"), fill = colour_darkblue)
 all_widgets_on_canvas += [text_radius1, text_radius2, text_radius3]
 
 text_velocity1 = canvas1.create_text(20,10, anchor = "nw", text = "Select the velocity\nof the particle", font = ("Avenir", 40, "bold"), fill = colour_darkblue)
-text_velocity2 = canvas1.create_text(20,120, anchor = "nw", text = "Fill in velocity\nin each direction", font = ("Avenir", 25, "bold"), fill = colour_grayblue)
+text_velocity2 = canvas1.create_text(20,130, anchor = "nw", text = "Fill in the velocity\nin each direction", font = ("Avenir", 25, "bold"), fill = colour_grayblue)
 text_velocity3 = canvas1.create_text(28,227, anchor = "nw", text = "X = ", font = ("Avenir", 35, "bold"), fill = colour_darkblue)
 text_velocity4 = canvas1.create_text(230,227, anchor = "nw", text = "Y = ", font = ("Avenir", 35, "bold"), fill = colour_darkblue)
-all_widgets_on_canvas += [text_velocity1, text_velocity2, text_velocity3, text_velocity4]
+text_velocity5 = canvas1.create_text(57,277, anchor = "nw", text = "(Insert numbers between -100 and 100)", font = ("Avenir", 20), fill = colour_grayblue)
+all_widgets_on_canvas += [text_velocity1, text_velocity2, text_velocity3, text_velocity4, text_velocity5]
 
 text_mass1 = canvas1.create_text(20,10, anchor = "nw", text = "Select the mass\nof the particle", font = ("Avenir", 40, "bold"), fill = colour_darkblue)
-text_mass2 = canvas1.create_text(20,120, anchor = "nw", text = "Fill in the mass", font = ("Avenir", 25, "bold"), fill = colour_grayblue)
+text_mass2 = canvas1.create_text(20,130, anchor = "nw", text = "Fill in the mass\nof the particle", font = ("Avenir", 25, "bold"), fill = colour_grayblue)
 text_mass3 = canvas1.create_text(28,227, anchor = "nw", text = "Mass = ", font = ("Avenir", 35, "bold"), fill = colour_darkblue)
 all_widgets_on_canvas += [text_mass1, text_mass2, text_mass3]
+
+text_simulation1 = canvas1.create_text(20,220, anchor = "nw", text = "I hope you enjoy\nthe simulation", font = ("Avenir", 40, "bold"), fill = colour_darkblue)
+text_simulation2 = canvas1.create_text(20,340, anchor = "nw", text = "Run this program again\nto create another simulation ", font = ("Avenir", 25, "bold"), fill = colour_darkblue)
+all_widgets_on_canvas += [text_simulation1, text_simulation2]
 
 # /Buttons
 i_btn_github_out= canvas1.create_text(20,500, anchor = "nw", text = "GitHub @KubaSimek", font = ("Avenir", 20), fill = colour_grayblue)
@@ -277,6 +286,9 @@ i_frame2_1 = canvas1.create_image(0, 0, anchor = "nw", image = frame2_1)
 i_frame2_2 = canvas1.create_image(0, 430, anchor = "nw", image = frame2_2)
 all_widgets_on_canvas += [i_frame2_1, i_frame2_2]
 
+i_frame3_1 = canvas1.create_image(0, 0, anchor = "nw", image = frame3_1)
+all_widgets_on_canvas += [i_frame3_1]
+
 i_info_bg = canvas1.create_image(0, 0, anchor = "nw", image = info_bg)
 all_widgets_on_canvas += [i_info_bg]
 
@@ -285,13 +297,16 @@ all_widgets_on_canvas += [i_info_bg]
 
 """Function that is called when opening the program or clicking on the home button"""
 def main_page(event = None):
-    global still_position, box_bool
-
+    global still_position, box_bool, num
+    num = 0
     box_bool = False
     still_position = False
-    #particles.destroy_particles()
+    #mp.particles.destroy_particles()
     for p in all_widgets_on_canvas:
         canvas1.itemconfigure(p, state = "hidden")
+    
+    for c in circles:
+        canvas1.delete(c)
     
     if point != False:
         canvas1.delete(point)
@@ -315,6 +330,7 @@ main_page()
 # /Buttons commands
 """Command for each button"""
 def cmd_start(event):
+    global circles, num, var_m
     for p in all_widgets_on_canvas:
         canvas1.itemconfigure(p, state = "hidden")
     canvas1.itemconfigure(text_start1, state = "normal")
@@ -335,9 +351,10 @@ def cmd_start(event):
     # If we want to finish the process of adding the particle
     
     if var_m != 0:
-        print(var_x,var_y,var_vx)
-        canvas1.create_oval(var_x * 44 + 500  - var_r, var_y * 44 + 62 - var_r, var_x * 44 + 500  + var_r, var_y * 44 + 62 + var_r, fill = "white", outline = "blue", width = 4)
-        mp.particles.add_par(mp.Particle(var_x, var_y, var_vx, var_vy, var_r, 1))
+        var_m = float(input_mass.get())
+        canvas1.delete(circle)
+        circles.append(canvas1.create_oval(var_x * 44 + 500  - var_r * 44, var_y * 44 + 62 - var_r * 44, var_x * 44 + 500  + var_r * 44, var_y * 44 + 62 + var_r * 44, fill = "white", outline = "blue", width = 1))
+        mp.add_par(var_x, 10 - var_y , var_vx, var_vy, var_r, var_m) #matplotlib is counting Y direction from the bottom so var_y has to be 10 - var_y so it is placed correctly 
     return
 
 def cmd_info(event):
@@ -352,20 +369,30 @@ def cmd_info(event):
     return
 
 def cmd_simulation(event):
-    mp.particles.innit_anim_on_canvas(window1)
-    mp.particles.animation()
+    global particles
+
     for p in all_widgets_on_canvas:
         canvas1.itemconfigure(p, state = "hidden")
-    canvas1.itemconfigure(i_logo2, state = "normal")
-    canvas1.tag_raise(i_logo2) #move logo to the top layer
-    canvas1.itemconfigure(i_btn_home_in, state = "normal")
-    canvas1.itemconfigure(i_btn_home_out, state = "normal")
-    canvas1.tag_raise(i_btn_home_out)
+    canvas1.itemconfigure(i_logo1, state = "normal")
+    canvas1.tag_raise(i_logo1) #move logo to the top layer
+    canvas1.itemconfigure(i_frame3_1, state = "normal")
     canvas1.itemconfigure(the_box, state = "normal")
+    canvas1.itemconfigure(text_simulation1, state = "normal")
+    canvas1.tag_raise(text_simulation1)
+    canvas1.itemconfigure(text_simulation2, state = "normal")
+    canvas1.tag_raise(text_simulation2)
+    canvas1.itemconfigure(text_home1, state = "normal")
+    canvas1.tag_raise(text_home1)
+    canvas1.itemconfigure(i_btn_github_out, state = "normal")
+    canvas1.tag_raise(i_btn_github_out)
+    mp.particles.print_par()
+    mp.particles.innit_anim_on_canvas(window1)
+    mp.particles.animation(window1, save = False)
     return
 
 def cmd_addparticle(event):
-    global still_position, box_bool, circle, var_m
+    global still_position, box_bool, circle, var_m, num
+    num += 1
     circle = False
     var_m = 0
 
@@ -401,8 +428,6 @@ def cmd_addparticle(event):
     canvas1.tag_raise(text_addparticle4)
     canvas1.itemconfigure(text_addparticle5, state = "normal")
     canvas1.tag_raise(text_addparticle5)
-    canvas1.itemconfigure(text_addparticle6, state = "normal")
-    canvas1.tag_raise(text_addparticle6)
     canvas1.itemconfigure(the_box, state = "normal")
     return
 
@@ -446,9 +471,9 @@ def cmd_next2(event):
 
     for p in all_widgets_on_canvas:
         canvas1.itemconfigure(p, state = "hidden")
-    
-    var_r = float(input_radius.get())*44
-    
+        
+    var_r = float(input_radius.get())
+        
     canvas1.itemconfigure(i_logo2, state = "normal")
     canvas1.tag_raise(i_logo2) #move logo to the top layer
     canvas1.itemconfigure(i_btn_home_in, state = "normal")
@@ -471,9 +496,11 @@ def cmd_next2(event):
     canvas1.tag_raise(text_velocity3)
     canvas1.itemconfigure(text_velocity4, state = "normal")
     canvas1.tag_raise(text_velocity4)
+    canvas1.itemconfigure(text_velocity5, state = "normal")
+    canvas1.tag_raise(text_velocity5)
     canvas1.itemconfigure(the_box, state = "normal")
     canvas1.delete(point)
-    circle = canvas1.create_oval(var_x * 44 + 500  - var_r, var_y * 44 + 62 - var_r, var_x * 44 + 500  + var_r, var_y * 44 + 62 + var_r, fill = "white", outline = "blue", width = 4)
+    circle = canvas1.create_oval(var_x * 44 + 500  - var_r * 44, var_y * 44 + 62 - var_r * 44, var_x * 44 + 500  + var_r * 44, var_y * 44 + 62 + var_r * 44, fill = "white", outline = "blue", width = 1)
     return
 
 def cmd_next3(event):
