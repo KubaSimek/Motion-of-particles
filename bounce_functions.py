@@ -18,7 +18,7 @@ def wall_bounce(particles):
         return
 
 def collision_check(a,b):
-      if (a.radius/50 + b.radius/50)**2 >= (a.pos_x - b.pos_x)**2 + (a.pos_y - b.pos_y)**2:
+      if (a.radius + b.radius - 0.1)**2 > (a.pos_x - b.pos_x)**2 + (a.pos_y - b.pos_y)**2:
             return True
       else:
             return False
@@ -32,42 +32,24 @@ def pairs_of_particles(particles):
 
 def particles_bounce():
     for a,b in pairs:
-          if collision_check(a,b):
+            if collision_check(a,b):
+                X = 2 * np.dot(np.subtract(a.vel_coord,b.vel_coord), np.subtract(a.pos_coord, b.pos_coord))/(np.linalg.norm(a.pos_coord - b.pos_coord)**2 * (a.mass + b.mass))
+                a.vel_coord = np.subtract(a.vel_coord, b.mass * X * np.subtract(a.pos_coord,b.pos_coord))
+                b.vel_coord = np.subtract(b.vel_coord, a.mass * X * np.subtract(b.pos_coord,a.pos_coord))
+                
+                print(a)
+                print(b)
+                print(np.linalg.norm(a.pos_coord - b.pos_coord))
 
-                """"
-                m1, m2 = a.radius, b.radius
-
-                n = np.array((a.pos_x - b.pos_x, a.pos_y - b.pos_y))
-                t = np.array((a.pos_y - b.pos_y, b.pos_x - a.pos_x))
-                matrix = np.array([n,t])
-
-                vel_a_nt = np.array(((m1-m2)/(m1+m2))* np.dot(a.vel_coord,n),np.dot(a.vel_coord,t))
-                vel_b_nt = np.array(np.dot(b.vel_coord,n) + (m1/(m1+m2))*2* np.dot(a.vel_coord,n),np.dot(b.vel_coord,t))
-
-                x_nt = np.dot(np.invert(matrix),vel_a_nt)
-                y_nt = np.dot(np.invert(matrix),vel_b_nt)
-
-                vel_a_xy = np.array((np.dot(vel_a_nt,x_nt),np.dot(vel_a_nt,y_nt)))
-                vel_b_xy = np.array((np.dot(vel_b_nt,x_nt),np.dot(vel_b_nt,y_nt)))
-
-                a.vel_x = vel_a_xy[0]
-                a.vel_y = vel_a_xy[1]
-                b.vel_x = vel_b_xy[0]
-                b.vel_y = vel_b_xy[1]
-                """
-                m1, m2 = a.radius**2, b.radius**2
-                M = m1 + m2
-                r1, r2 = a.pos_coord, b.pos_coord
-                d = np.linalg.norm(r1 - r2)**2
-                v1, v2 = a.vel_coord, b.vel_coord
-                u1 = v1 - 2*m2 / M * np.dot(v1-v2, r1-r2) / d * (r1 - r2)
-                u2 = v2 - 2*m1 / M * np.dot(v2-v1, r2-r1) / d * (r2 - r1)
-                a.vel_x = u1[0]
-                a.vel_y = u1[1]
-                b.vel_x = u2[0]
-                b.vel_y = u2[1]
-
-          else:
+                a.vel_x = a.vel_coord[0]
+                a.vel_y = a.vel_coord[1]
+                b.vel_x = b.vel_coord[0]
+                b.vel_y = b.vel_coord[1]
+                a.pos_x = a.pos_x + a.vel_x * 0.001
+                a.pos_y = a.pos_y + a.vel_y * 0.001
+                b.pos_x = b.pos_x + b.vel_x * 0.001
+                b.pos_y = b.pos_y + b.vel_y * 0.001
+            else:
                 pass
     return
 

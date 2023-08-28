@@ -15,6 +15,7 @@ from  tkinter import ttk
 import math
 from PIL import Image, ImageTk
 from functools import partial
+from tkVideoPlayer import TkinterVideo
 import Main_program as mp
 
 # //WINDOW
@@ -76,6 +77,8 @@ frame2_2 = ImageTk.PhotoImage((Image.open("images/frames_others/frame1_1.png")).
 frame3_1 = ImageTk.PhotoImage((Image.open("images/frames_others/frame1_1.png")).resize((438,700)))
 
 info_bg = ImageTk.PhotoImage(Image.open("images/background/info_bg.png"))
+
+video = ImageTk.PhotoImage(Image.open("images/pohyb_animace.gif"))
 
 
 # //VARIABLES
@@ -146,6 +149,8 @@ def cmd_box_click_position(event):
             box_bool = not box_bool
 
 """
+Implementing better way to select the radius - it does not working. 
+
 entry_radius = tk.DoubleVar()
 
 circle = False
@@ -292,6 +297,8 @@ all_widgets_on_canvas += [i_frame3_1]
 i_info_bg = canvas1.create_image(0, 0, anchor = "nw", image = info_bg)
 all_widgets_on_canvas += [i_info_bg]
 
+i_video = canvas1.create_image(500, 62, anchor = "nw", image = video)
+all_widgets_on_canvas += [i_video]
 
 # //FUNCTIONS
 
@@ -301,9 +308,10 @@ def main_page(event = None):
     num = 0
     box_bool = False
     still_position = False
-    #mp.particles.destroy_particles()
+
     for p in all_widgets_on_canvas:
         canvas1.itemconfigure(p, state = "hidden")
+    """Make every element on the canvas hidden and then select just elements that are supposed to be visible"""
     
     for c in circles:
         canvas1.delete(c)
@@ -324,15 +332,18 @@ def main_page(event = None):
     canvas1.itemconfigure(i_btn_info_out, state = "normal")
     canvas1.itemconfigure(i_btn_github_out, state = "normal")
     canvas1.tag_raise(i_btn_github_out)
+    canvas1.tag_raise(i_video)
     
 main_page()
 
 # /Buttons commands
-"""Command for each button"""
+"""Command functions for each button"""
 def cmd_start(event):
     global circles, num, var_m
     for p in all_widgets_on_canvas:
         canvas1.itemconfigure(p, state = "hidden")
+    """Make every element on the canvas hidden and then select just elements that are supposed to be visible"""
+
     canvas1.itemconfigure(text_start1, state = "normal")
     canvas1.tag_raise(text_start1)
     canvas1.itemconfigure(text_start2, state = "normal")
@@ -369,8 +380,6 @@ def cmd_info(event):
     return
 
 def cmd_simulation(event):
-    global particles
-
     for p in all_widgets_on_canvas:
         canvas1.itemconfigure(p, state = "hidden")
     canvas1.itemconfigure(i_logo1, state = "normal")
@@ -387,6 +396,7 @@ def cmd_simulation(event):
     canvas1.tag_raise(i_btn_github_out)
     mp.particles.print_par()
     mp.particles.innit_anim_on_canvas(window1)
+    mp.bf.pairs_of_particles(mp.particles.par)
     mp.particles.animation(window1, save = False)
     return
 
@@ -558,6 +568,7 @@ def home_out(event):
 
 def start_in(event):
     canvas1.itemconfigure(i_btn_start_in, state = "normal")
+    canvas1.tag_raise(i_btn_start_in)
     return
     
 def start_out(event):
@@ -566,6 +577,7 @@ def start_out(event):
 
 def info_in(event):
     canvas1.itemconfigure(i_btn_info_in, state = "normal")
+    canvas1.tag_raise(i_btn_info_in)
     return
     
 def info_out(event):
@@ -574,6 +586,7 @@ def info_out(event):
 
 def simulation_in(event):
     canvas1.itemconfigure(i_btn_simulation_in, state = "normal")
+    canvas1.tag_raise(i_btn_simulation_in)
     return
     
 def simulation_out(event):
@@ -582,6 +595,7 @@ def simulation_out(event):
 
 def addparticle_in(event):
     canvas1.itemconfigure(i_btn_addparticle_in, state = "normal")
+    canvas1.tag_raise(i_btn_addparticle_in)
     return
     
 def addparticle_out(event):

@@ -10,7 +10,6 @@ colour_darkblue = "#214478"
 
 class Particle:
     def __init__(self, x, y, vx, vy, r, m):
-        self.name = self
         self.pos_x = x 
         self.pos_y = y
         self.vel_x = vx
@@ -25,7 +24,7 @@ class Particle:
         self.point, = ax.plot(self.pos_x, self.pos_y, "bo", mfc = "none", markersize = self.radius*60)
     
     def __repr__(self):
-        return("(x = " + str(self.pos_x) + ", y = " + str(self.pos_y) + ", r = " + str(self.radius) + ", m = " + str(self.mass) + ")")
+        return("(x = " + str(self.pos_x) + ", y = " + str(self.pos_y) + ", vx = " + str(self.vel_x) + ", vy = " + str(self.vel_y) + ", r = " + str(self.radius) + ", m = " + str(self.mass) + ")")
 
 fig, ax= plt.subplots()
 animation_canvas = False
@@ -58,8 +57,6 @@ class Particles:
         ax.xaxis.set_ticks([])
         ax.yaxis.set_ticks([])
         fig.tight_layout(pad=0)
-        
-        bf.pairs_of_particles(self.par)
 
         for p in self.par:
             p.plt_par(ax)
@@ -75,8 +72,12 @@ class Particles:
             dt = current_time - prev_frame_time
             prev_frame_time = current_time
 
+            for p in particles.par:
+                p.pos_coord = np.array((p.pos_x,p.pos_y))
+                p.vel_coord = np.array((p.vel_x,p.vel_y))
+
             bf.wall_bounce(self)
-            #bf.particles_bounce()
+            bf.particles_bounce()
             
             position_update(dt)
             
