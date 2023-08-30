@@ -1,5 +1,5 @@
 """
-GIT for simulation of moving particles in 2D box
+GIT for simulation of moving particles in 2D box using Tkinter
 
 To divide the code for different sections I use //TITLE and /Subtitle
 """
@@ -7,7 +7,6 @@ To divide the code for different sections I use //TITLE and /Subtitle
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
-
 import tkinter as tk
 import time
 import webbrowser
@@ -88,12 +87,12 @@ all_widgets_on_canvas = []
 
 circles = []
 
-# If we choosing radius of the particle or not
+# Bool variables that helps us they help us to orient ourselves in which phase of particle parameter selection we are currently in
 still_radius = False
 
 point = False
 
-box_bool = True #if the tracking of the pointer is currently active or not
+box_bool = True 
 
 still_position = False
 
@@ -103,7 +102,6 @@ circle = False
 # //PARTICLES
 """Through the process of adding the particle we will change these variables and after selecting last variable (mass) 
 it will add the particle with its properties to the set of all particles"""
-#particles = mp.Particles()
 var_x = 0
 var_y = 0
 var_vx = 0
@@ -304,7 +302,7 @@ all_widgets_on_canvas += [i_info_bg]
 # //FUNCTIONS
 
 """Function that is called when opening the program or clicking on the home button"""
-def main_page(event = None):
+def main_page(event = None): #this function can be called as "event" - command for a button and also seperate
     global still_position, box_bool, num
     num = 0
     box_bool = False
@@ -335,8 +333,8 @@ def main_page(event = None):
     canvas1.tag_raise(i_btn_github_out)
     canvas1.itemconfigure(i_main_sim, state = "normal")
     canvas1.tag_raise(i_main_sim)
-    
-main_page()
+
+main_page() #opening the main page when the program starts
 
 # /Buttons commands
 """Command functions for each button"""
@@ -361,8 +359,7 @@ def cmd_start(event):
     canvas1.itemconfigure(i_btn_addparticle_out, state = "normal")
     canvas1.itemconfigure(the_box, state = "normal")
 
-    # If we want to finish the process of adding the particle
-    
+    # If we want to finish the process of adding the particle (var_m != 0), we add the particle to the simulation with its parametres
     if var_m != 0:
         var_m = float(input_mass.get())
         canvas1.delete(circle)
@@ -396,9 +393,11 @@ def cmd_simulation(event):
     canvas1.tag_raise(text_home1)
     canvas1.itemconfigure(i_btn_github_out, state = "normal")
     canvas1.tag_raise(i_btn_github_out)
-    mp.particles.print_par()
+
+    #Start the animation
+    mp.particles.print_par() #printing all particles just to check parametres
     mp.particles.innit_anim_on_canvas(window1)
-    mp.bf.pairs_of_particles(mp.particles.par)
+    mp.bf.pairs_of_particles(mp.particles.par) #create pairs of particles
     mp.particles.animation(window1, save = False)
     return
 
