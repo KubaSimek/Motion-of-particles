@@ -45,10 +45,10 @@ def particles_bounce():
                 a.vel_y = a.vel_coord[1]
                 b.vel_x = b.vel_coord[0]
                 b.vel_y = b.vel_coord[1]
-                a.pos_x = a.pos_x + a.vel_x * 0.001
-                a.pos_y = a.pos_y + a.vel_y * 0.001
-                b.pos_x = b.pos_x + b.vel_x * 0.001
-                b.pos_y = b.pos_y + b.vel_y * 0.001
+                a.pos_x = a.pos_x + a.vel_x * 0.002
+                a.pos_y = a.pos_y + a.vel_y * 0.002
+                b.pos_x = b.pos_x + b.vel_x * 0.002
+                b.pos_y = b.pos_y + b.vel_y * 0.002
             else:
                 pass
     return

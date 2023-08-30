@@ -62,6 +62,8 @@ img_next_in = ImageTk.PhotoImage(Image.open("images/buttons/btn_next_in.png"))
 
 
 # /Backgrounds, logos and others
+main_sim = ImageTk.PhotoImage(Image.open("images/frames_others/main_sim.png"))
+
 icon = ImageTk.PhotoImage(Image.open("images/logo/icon.png"))
 window1.iconphoto(False, icon)
 
@@ -77,8 +79,6 @@ frame2_2 = ImageTk.PhotoImage((Image.open("images/frames_others/frame1_1.png")).
 frame3_1 = ImageTk.PhotoImage((Image.open("images/frames_others/frame1_1.png")).resize((438,700)))
 
 info_bg = ImageTk.PhotoImage(Image.open("images/background/info_bg.png"))
-
-video = ImageTk.PhotoImage(Image.open("images/pohyb_animace.gif"))
 
 
 # //VARIABLES
@@ -280,6 +280,9 @@ all_widgets_on_canvas += [i_logo1, i_logo2]
 
 # /Others
 """Backgrounds and other elements on the canvas"""
+i_main_sim = canvas1.create_image(500,62, anchor = "nw", image = main_sim)
+all_widgets_on_canvas += [i_main_sim]
+
 the_box = canvas1.create_rectangle(500,62,940,502, width = 4, fill = "white", outline = "black")
 all_widgets_on_canvas += [the_box]
 
@@ -297,8 +300,6 @@ all_widgets_on_canvas += [i_frame3_1]
 i_info_bg = canvas1.create_image(0, 0, anchor = "nw", image = info_bg)
 all_widgets_on_canvas += [i_info_bg]
 
-i_video = canvas1.create_image(500, 62, anchor = "nw", image = video)
-all_widgets_on_canvas += [i_video]
 
 # //FUNCTIONS
 
@@ -332,7 +333,8 @@ def main_page(event = None):
     canvas1.itemconfigure(i_btn_info_out, state = "normal")
     canvas1.itemconfigure(i_btn_github_out, state = "normal")
     canvas1.tag_raise(i_btn_github_out)
-    canvas1.tag_raise(i_video)
+    canvas1.itemconfigure(i_main_sim, state = "normal")
+    canvas1.tag_raise(i_main_sim)
     
 main_page()
 
