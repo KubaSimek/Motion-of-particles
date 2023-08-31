@@ -13,8 +13,6 @@ import webbrowser
 from  tkinter import ttk
 import math
 from PIL import Image, ImageTk
-from functools import partial
-from tkVideoPlayer import TkinterVideo
 import Main_program as mp
 
 # //WINDOW
@@ -26,7 +24,6 @@ window1.geometry("1000x560")
 bg = tk.PhotoImage(file = "images/background/bg.png")
 canvas1 = tk.Canvas(window1, width = 1000,height = 560)
 canvas1.create_image( 0, 0, image = bg, anchor = "nw")
-
 
 
 # /Colours
@@ -87,7 +84,7 @@ all_widgets_on_canvas = []
 
 circles = []
 
-# Bool variables that helps us they help us to orient ourselves in which phase of particle parameter selection we are currently in
+# Boolean variables that helps us to orient ourselves in which phase of particle parameter selection we are currently in
 still_radius = False
 
 point = False
